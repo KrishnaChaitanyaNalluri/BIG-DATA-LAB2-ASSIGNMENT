@@ -32,12 +32,12 @@ public class HbaseStart
 {
 	static public void main(String args[]) throws IOException {
 		
-	createTable();
-	insertTable();
-		//retrieveTable();
+	//	createTable();
+	//	insertTable();
+		retrieveTable();
 	//	deleteTable();
-		//getAllRow();
-		//getAllTable();
+		getAllRow();
+		getAllTable();
 		}
 	
 	
@@ -54,7 +54,7 @@ public class HbaseStart
 		try {
 			// HBaseConfiguration hc = new HBaseConfiguration(new Configuration());
 			
-			  HTableDescriptor ht = new HTableDescriptor("Group1Table"); 
+			  HTableDescriptor ht = new HTableDescriptor("Group1SensorTable"); 
 			  
 			  ht.addFamily( new HColumnDescriptor("Location"));
 
@@ -62,7 +62,7 @@ public class HbaseStart
 			  
 			  ht.addFamily( new HColumnDescriptor("Date"));
 			  
-			  ht.addFamily( new HColumnDescriptor("Accelerometer"));
+			  ht.addFamily( new HColumnDescriptor("Dimensions"));
 			  
 			  ht.addFamily( new HColumnDescriptor("Humidity"));
 			  
@@ -99,7 +99,7 @@ public class HbaseStart
          
          System.out.println("Check here ");
 
-		  HTable table = new HTable(config, "Group1Table");
+		  HTable table = new HTable(config, "Group1SensorTable");
 	
 		  //Put p = new Put(Bytes.toBytes("row1"));
 		  
@@ -112,7 +112,7 @@ public class HbaseStart
   
  			String sCurrentLine;
  			String latitude="",longitude="",Date="",x="",y="",z="",humid="",temp="";
- 			br = new BufferedReader(new FileReader("E:/bigdata//Sensorvaluesgroup1modified.txt"));
+ 			br = new BufferedReader(new FileReader("C:/Users/tirumala/Desktop/desktop/Assignments and Homeworks/bigdata/lab 02//sens.txt"));
  			
  			while ((sCurrentLine = br.readLine()) != null) {
  				
@@ -164,9 +164,9 @@ public class HbaseStart
  				if (Date!="")
  				 p.add(Bytes.toBytes("Date"), Bytes.toBytes("col"+(count+2)),Bytes.toBytes(Date));
  				//if (x!="" || y!="" || z!="")
- 				 p.add(Bytes.toBytes("Accelerometer"), Bytes.toBytes("col"+(count+3)),Bytes.toBytes(x));
- 				p.add(Bytes.toBytes("Accelerometer"), Bytes.toBytes("col"+(count+4)),Bytes.toBytes(y));
- 				p.add(Bytes.toBytes("Accelerometer"), Bytes.toBytes("col"+(count+5)),Bytes.toBytes(z));
+ 				 p.add(Bytes.toBytes("Dimensions"), Bytes.toBytes("col"+(count+3)),Bytes.toBytes(x));
+ 				p.add(Bytes.toBytes("Dimensions"), Bytes.toBytes("col"+(count+4)),Bytes.toBytes(y));
+ 				p.add(Bytes.toBytes("Dimensions"), Bytes.toBytes("col"+(count+5)),Bytes.toBytes(z));
  				 if (humid !="")
  					 p.add(Bytes.toBytes("Humidity"), Bytes.toBytes("col"+(count+6)),Bytes.toBytes(humid));
  				 if (temp!="")
@@ -210,7 +210,7 @@ public class HbaseStart
          config.set("hbase.master", "134.193.136.127:60010");
 		
 		
-		  HTable table = new HTable(config, "Group1Table");
+		  HTable table = new HTable(config, "Group1SensorTable");
 		
 		 Get g = new Get(Bytes.toBytes("row1"));
 
@@ -225,11 +225,11 @@ public class HbaseStart
 
 		  byte [] value2 = r.getValue(Bytes.toBytes("Date"),Bytes.toBytes("col"+(display+3)));
 		  
-		  byte [] value3 = r.getValue(Bytes.toBytes("Accelerometer"),Bytes.toBytes("col"+(display+4)));
+		  byte [] value3 = r.getValue(Bytes.toBytes("Dimensions"),Bytes.toBytes("col"+(display+4)));
 		  
-		  byte [] value4 = r.getValue(Bytes.toBytes("Accelerometer"),Bytes.toBytes("col"+(display+5)));
+		  byte [] value4 = r.getValue(Bytes.toBytes("Dimensions"),Bytes.toBytes("col"+(display+5)));
 		  
-		  byte [] value5 = r.getValue(Bytes.toBytes("Accelerometer"),Bytes.toBytes("col"+(display+6)));
+		  byte [] value5 = r.getValue(Bytes.toBytes("Dimensions"),Bytes.toBytes("col"+(display+6)));
 		  
 		  byte [] value6 = r.getValue(Bytes.toBytes("Humidity"),Bytes.toBytes("col"+(display+7)));
 		  
@@ -294,8 +294,8 @@ public class HbaseStart
          config.set("hbase.master", "134.193.136.127:60010");
          
          HBaseAdmin admin = new HBaseAdmin(config);
-         admin.disableTable("Group1Table");
-         admin.deleteTable("Group1Table");
+         admin.disableTable("Group1SensorTable");
+         admin.deleteTable("Group1SensorTable");
 
 	}
 	
@@ -307,10 +307,10 @@ public class HbaseStart
          config.set("hbase.zookeeper.property.clientPort","2181");
          config.set("hbase.master", "134.193.136.127:60010");
          
-         HTable table = new HTable(config, "Group1Table");
+         HTable table = new HTable(config, "Group1SensorTable");
          Get g = new Get(Bytes.toBytes("row1"));
 
-         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("row.txt"), "utf-8"));
+         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("retrieverow.txt"), "utf-8"));
          
 		  Result r = table.get(g);
 		  int check_here=0;
@@ -349,10 +349,10 @@ public class HbaseStart
          config.set("hbase.master", "134.193.136.127:60010");
 		
 		try{
-            HTable table = new HTable(config, "Group1Table");
+            HTable table = new HTable(config, "Group1SensorTable");
             Scan s = new Scan();
             ResultScanner ss = table.getScanner(s);
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("table.txt"), "utf-8"));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("retrievetable.txt"), "utf-8"));
             for(Result r:ss){
                 for(KeyValue kv : r.raw()){
                    writer.write("\n"+new String(kv.getRow()) + " GeT ALL TABLE ");
